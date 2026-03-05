@@ -1,11 +1,33 @@
-<div align="center">
+# Influencer Access Portal - MVP
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+## Setup & Run
 
-  <h1>Built with AI Studio</h2>
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+2. **Initialize Database**:
+   The app uses SQLite. The database will be automatically seeded on the first run.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+3. **Start Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-</div>
+4. **Login Credentials**:
+   - **Admin**: `admin@portal.com` / `admin123`
+   - **Media Center**: `media@center.com` / `media123`
+
+## Features
+- **Login**: Role-based access (Admin/Media Center).
+- **Influencer List**: Advanced filtering by ER, followers, pricing, and specific tags.
+- **Influencer Details**: Case studies, pricing ranges, and media profiles.
+- **Shortlist**: Manage selected influencers and generate campaign emails.
+- **Email Generation**: Preview and copy campaign summaries to clipboard.
+
+## Tech Stack
+- **Frontend**: React + Vite + Tailwind CSS + Lucide Icons + Motion
+- **Backend**: Express.js (Full-stack mode)
+- **Database**: SQLite (via Better-SQLite3)
+- **Auth**: JWT-based session in cookies
