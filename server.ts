@@ -1,13 +1,19 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Database from 'better-sqlite3';
 
-const db = new Database('database.db');
-const JWT_SECRET = 'influencer-portal-secret-key';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Use /tmp for SQLite on Vercel to allow write access (temporary)
+const dbPath = process.env.VERCEL ? '/tmp/database.db' : 'database.db';
+const db = new Database(dbPath);
+const JWT_SECRET = process.env.JWT_SECRET || 'influencer-portal-secret-key';
 
 // Initialize Database Schema
 db.exec(`
@@ -295,8 +301,9 @@ if (userCount.count === 0) {
   }
 }
 
+export const app = express();
+
 async function startServer() {
-  const app = express();
   app.use(express.json());
   app.use(cookieParser());
 
@@ -461,10 +468,15 @@ async function startServer() {
     });
   }
 
-  const PORT = 3000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  const PORT = process.env.PORT || 3000;
+  
+  // Only listen if not running as a Vercel function
+  if (!process.env.VERCEL) {
+    app.listen(Number(PORT), '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
-startServer();
+// Start the server initialization
+startServer().catch(console.error);
