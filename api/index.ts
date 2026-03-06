@@ -513,13 +513,36 @@ app.post('/api/auth/login', (req, res) => {
     }
 
     const influencers = db.prepare(query).all(...params) as any[];
-    res.json(influencers.map(inf => ({
-      ...inf,
-      verticals: JSON.parse(inf.verticals || '[]'),
-      languages: JSON.parse(inf.languages || '[]'),
-      project_types: JSON.parse(inf.project_types || '[]'),
-      has_case_studies: !!inf.has_case_studies
-    })));
+    res.json(influencers.map(inf => {
+      // Generate mock analytics for demo
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+      const follower_growth = months.map((month, i) => ({
+        name: month,
+        value: (inf.follower_ig || 100000) + (i * 15000) + Math.floor(Math.random() * 5000)
+      }));
+      const engagement_trends = months.map((month, i) => ({
+        name: month,
+        value: (inf.engagement_rate || 4.0) + (Math.sin(i) * 0.5) + (Math.random() * 0.2)
+      }));
+      const campaign_roi = [
+        { name: 'Spring 24', value: 3.2 + Math.random() },
+        { name: 'Summer 24', value: 4.5 + Math.random() },
+        { name: 'Autumn 24', value: 3.8 + Math.random() }
+      ];
+
+      return {
+        ...inf,
+        verticals: JSON.parse(inf.verticals || '[]'),
+        languages: JSON.parse(inf.languages || '[]'),
+        project_types: JSON.parse(inf.project_types || '[]'),
+        has_case_studies: !!inf.has_case_studies,
+        analytics: {
+          follower_growth,
+          engagement_trends,
+          campaign_roi
+        }
+      };
+    }));
   });
 
   app.get('/api/influencers/:id', authenticate, (req: any, res) => {
@@ -535,13 +558,34 @@ app.post('/api/auth/login', (req, res) => {
     const pricing = db.prepare('SELECT * FROM pricing_items WHERE influencer_id = ?').all(influencer.id);
     const caseStudies = db.prepare('SELECT * FROM case_studies WHERE influencer_id = ?').all(influencer.id);
 
+    // Generate mock analytics for demo
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const follower_growth = months.map((month, i) => ({
+      name: month,
+      value: (influencer.follower_ig || 100000) + (i * 15000) + Math.floor(Math.random() * 5000)
+    }));
+    const engagement_trends = months.map((month, i) => ({
+      name: month,
+      value: (influencer.engagement_rate || 4.0) + (Math.sin(i) * 0.5) + (Math.random() * 0.2)
+    }));
+    const campaign_roi = [
+      { name: 'Spring 24', value: 3.2 + Math.random() },
+      { name: 'Summer 24', value: 4.5 + Math.random() },
+      { name: 'Autumn 24', value: 3.8 + Math.random() }
+    ];
+
     res.json({
       ...influencer,
       verticals: JSON.parse(influencer.verticals || '[]'),
       languages: JSON.parse(influencer.languages || '[]'),
       project_types: JSON.parse(influencer.project_types || '[]'),
       pricing_items: pricing,
-      case_studies: caseStudies
+      case_studies: caseStudies,
+      analytics: {
+        follower_growth,
+        engagement_trends,
+        campaign_roi
+      }
     });
   });
 

@@ -2,8 +2,12 @@ import { GoogleGenAI } from "@google/genai";
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
-import { LogIn, Users, Star, LogOut, Search, Filter, Mail, ChevronRight, Check, X, MapPin, Globe, Award, Briefcase, Calendar, Menu } from 'lucide-react';
+import { LogIn, Users, Star, LogOut, Search, Filter, Mail, ChevronRight, Check, X, MapPin, Globe, Award, Briefcase, Calendar, Menu, TrendingUp, BarChart3, PieChart as PieChartIcon, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  AreaChart, Area, BarChart, Bar, Cell 
+} from 'recharts';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -476,6 +480,177 @@ const LoginPage = () => {
   );
 };
 
+const AnalyticsModal = ({ influencer, onClose }: { influencer: any, onClose: () => void }) => {
+  if (!influencer) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-realize-dark/80 backdrop-blur-md">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      >
+        <div className="p-8 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-realize-purple to-realize-blue flex items-center justify-center text-white shadow-lg">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-zinc-900 tracking-tight">{influencer.name} Analytics</h3>
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Performance & Growth Insights</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-3 hover:bg-zinc-200 rounded-full transition-colors">
+            <X className="w-6 h-6 text-zinc-500" />
+          </button>
+        </div>
+
+        <div className="p-10 overflow-y-auto flex-1 space-y-12">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Avg. Engagement</p>
+              <p className="text-3xl font-black text-realize-purple">{influencer.engagement_rate}%</p>
+              <div className="flex items-center gap-1 mt-2 text-emerald-500">
+                <TrendingUp className="w-3 h-3" />
+                <span className="text-[10px] font-bold">+1.2% vs last month</span>
+              </div>
+            </div>
+            <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Total Reach</p>
+              <p className="text-3xl font-black text-realize-blue">{(influencer.follower_ig / 1000000).toFixed(1)}M</p>
+              <div className="flex items-center gap-1 mt-2 text-emerald-500">
+                <TrendingUp className="w-3 h-3" />
+                <span className="text-[10px] font-bold">+45k new followers</span>
+              </div>
+            </div>
+            <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Campaign ROI</p>
+              <p className="text-3xl font-black text-realize-yellow">4.2x</p>
+              <div className="flex items-center gap-1 mt-2 text-emerald-500">
+                <TrendingUp className="w-3 h-3" />
+                <span className="text-[10px] font-bold">Top 5% in category</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Follower Growth */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+                  <Users className="w-4 h-4 text-realize-purple" /> Follower Growth
+                </h4>
+              </div>
+              <div className="h-64 w-full bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={influencer.analytics.follower_growth}>
+                    <defs>
+                      <linearGradient id="colorFollowers" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#9d50bb" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#9d50bb" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 10, fontWeight: 700, fill: '#a1a1aa' }}
+                    />
+                    <YAxis 
+                      hide 
+                    />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '10px', fontWeight: 800 }}
+                    />
+                    <Area type="monotone" dataKey="value" stroke="#9d50bb" strokeWidth={3} fillOpacity={1} fill="url(#colorFollowers)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Engagement Trends */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-realize-blue" /> Engagement Trends
+                </h4>
+              </div>
+              <div className="h-64 w-full bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={influencer.analytics.engagement_trends}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 10, fontWeight: 700, fill: '#a1a1aa' }}
+                    />
+                    <YAxis 
+                      hide 
+                    />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '10px', fontWeight: 800 }}
+                    />
+                    <Line type="monotone" dataKey="value" stroke="#56ccf2" strokeWidth={3} dot={{ r: 4, fill: '#56ccf2', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* Campaign ROI */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-realize-yellow" /> Campaign ROI (x)
+              </h4>
+            </div>
+            <div className="h-64 w-full bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={influencer.analytics.campaign_roi}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 10, fontWeight: 700, fill: '#a1a1aa' }}
+                  />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10, fontWeight: 700, fill: '#a1a1aa' }}
+                  />
+                  <Tooltip 
+                    cursor={{ fill: '#f4f4f5' }}
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '10px', fontWeight: 800 }}
+                  />
+                  <Bar dataKey="value" radius={[10, 10, 0, 0]}>
+                    {influencer.analytics.campaign_roi.map((entry: any, index: number) => (
+                      <Cell key={`cell-${index}`} fill={index === 1 ? '#ffeb3b' : '#e4e4e7'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-8 bg-white border-t border-zinc-100 flex justify-end">
+          <button 
+            onClick={onClose}
+            className="px-8 py-4 bg-realize-dark text-white font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-realize-purple transition-all shadow-xl shadow-zinc-200"
+          >
+            Close Analytics
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 const InfluencerListPage = () => {
   const [influencers, setInfluencers] = useState<any[]>([]);
   const [search, setSearch] = useState('');
@@ -484,6 +659,7 @@ const InfluencerListPage = () => {
   const [selectedMedia, setSelectedMedia] = useState<string[]>([]);
   const [followerRange, setFollowerRange] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedAnalytics, setSelectedAnalytics] = useState<any | null>(null);
 
   useEffect(() => {
     fetch('/api/influencers')
@@ -802,6 +978,13 @@ const InfluencerListPage = () => {
                           View Profile
                         </Link>
                         <button 
+                          onClick={() => setSelectedAnalytics(inf)}
+                          className="p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl hover:bg-realize-blue transition-all"
+                          title="View Analytics"
+                        >
+                          <TrendingUp className="w-5 h-5" />
+                        </button>
+                        <button 
                           onClick={() => addToShortlist(inf.id)}
                           className="p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl hover:bg-realize-purple transition-all"
                         >
@@ -816,6 +999,15 @@ const InfluencerListPage = () => {
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedAnalytics && (
+          <AnalyticsModal 
+            influencer={selectedAnalytics} 
+            onClose={() => setSelectedAnalytics(null)} 
+          />
+        )}
+      </AnimatePresence>
 
       {/* Footer Branding */}
       <div className="bg-realize-dark py-20 mt-20">
