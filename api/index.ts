@@ -1,18 +1,47 @@
 import express from 'express';
-import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import Database from 'better-sqlite3';
+
+console.log('Server starting...');
+
+let Database: any;
+try {
+  const betterSqlite3 = await import('better-sqlite3');
+  Database = betterSqlite3.default || betterSqlite3;
+  console.log('better-sqlite3 loaded successfully');
+} catch (err) {
+  console.error('CRITICAL: Failed to load better-sqlite3:', err);
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Use /tmp for SQLite on Vercel to allow write access (temporary)
-const dbPath = process.env.VERCEL ? '/tmp/database.db' : 'database.db';
-const db = new Database(dbPath);
+const dbPath = process.env.VERCEL ? '/tmp/database.db' : path.join(process.cwd(), 'database.db');
+let db: any;
+
+if (Database) {
+  try {
+    db = new Database(dbPath);
+    console.log(`Database connected at ${dbPath}`);
+  } catch (err) {
+    console.error('Failed to connect to database:', err);
+    db = new Database(':memory:');
+  }
+} else {
+  console.warn('Database class not available, creating mock db object');
+  db = {
+    exec: () => {},
+    prepare: () => ({
+      get: () => ({ count: 0 }),
+      run: () => ({ lastInsertRowid: 0 }),
+      all: () => []
+    })
+  };
+}
 const JWT_SECRET = process.env.JWT_SECRET || 'influencer-portal-secret-key';
 
 // Initialize Database Schema
@@ -302,26 +331,25 @@ if (userCount.count === 0) {
 }
 
 export const app = express();
+export default app;
+app.use(express.json());
+app.use(cookieParser());
 
-async function startServer() {
-  app.use(express.json());
-  app.use(cookieParser());
+// Helper for auth middleware
+const authenticate = (req: any, res: any, next: any) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
 
-  // Auth Middleware
-  const authenticate = (req: any, res: any, next: any) => {
-    const token = req.cookies.token;
-    if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = decoded;
-      next();
-    } catch (err) {
-      res.status(401).json({ error: 'Invalid token' });
-    }
-  };
-
-  // API Routes
-  app.post('/api/auth/login', (req, res) => {
+// API Routes
+app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;
     if (!user || !bcrypt.compareSync(password, user.password_hash)) {
@@ -455,28 +483,27 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    const { createServer: createViteServer } = await import('vite');
+    createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
+    }).then(vite => {
+      app.use(vite.middlewares);
     });
-    app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, 'dist')));
+    const distPath = path.resolve(process.cwd(), 'dist');
+    app.use(express.static(distPath));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      const indexPath = path.resolve(distPath, 'index.html');
+      res.sendFile(indexPath);
     });
   }
 
   const PORT = process.env.PORT || 3000;
   
-  // Only listen if not running as a Vercel function
   if (!process.env.VERCEL) {
     app.listen(Number(PORT), '0.0.0.0', () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   }
-}
-
-// Start the server initialization
-startServer().catch(console.error);
