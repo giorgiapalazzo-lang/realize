@@ -432,26 +432,6 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-4">
-          <button 
-            onClick={async () => {
-              const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: 'demo@example.com', password: 'demo' }),
-              });
-              if (res.ok) {
-                const user = await res.json();
-                setUser(user);
-                navigate('/influencers');
-              }
-            }}
-            className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-4 rounded-2xl hover:bg-realize-purple transition-all flex items-center justify-center gap-2"
-          >
-            Quick Demo Login <LogIn className="w-4 h-4" />
-          </button>
-        </div>
-
         <p className="mt-8 text-center text-xs text-zinc-400 font-bold">
           Don't have an account? <Link to="/signup" className="text-realize-purple hover:underline">Sign Up</Link>
         </p>
@@ -462,19 +442,6 @@ const LoginPage = () => {
           </Link>
         </div>
 
-        <div className="mt-10 pt-8 border-t border-zinc-100">
-          <p className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.2em] text-center mb-4">Demo Access</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-100">
-              <p className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Media Center</p>
-              <p className="text-[10px] font-bold text-zinc-600 truncate">media@center.com</p>
-            </div>
-            <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-100">
-              <p className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Admin</p>
-              <p className="text-[10px] font-bold text-zinc-600 truncate">admin@portal.com</p>
-            </div>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
@@ -1812,10 +1779,19 @@ const App = () => {
     fetch('/api/auth/me')
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        setUser(data);
+        if (data) {
+          setUser(data);
+        } else {
+          // PERMISSIVE DEMO: Auto-login a demo user if no session exists
+          setUser({ id: 999, email: 'demo@realize.com', role: 'admin', name: 'Demo User' });
+        }
         setIsLoading(false);
       })
-      .catch(() => setIsLoading(false));
+      .catch(() => {
+        // Fallback for network errors
+        setUser({ id: 999, email: 'demo@realize.com', role: 'admin', name: 'Demo User' });
+        setIsLoading(false);
+      });
   }, []);
 
   if (isLoading) return (
@@ -1829,13 +1805,13 @@ const App = () => {
       <div className="min-h-screen bg-white font-sans selection:bg-realize-purple/20 selection:text-realize-purple">
         <Navbar />
         <Routes>
-          <Route path="/" element={user ? <Navigate to="/influencers" /> : <LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/home" element={<Navigate to="/" />} />
-          <Route path="/login" element={user ? <Navigate to="/influencers" /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <Navigate to="/influencers" /> : <SignupPage />} />
-          <Route path="/influencers" element={user ? <InfluencerListPage /> : <Navigate to="/login" />} />
-          <Route path="/influencers/:id" element={user ? <InfluencerDetailPage /> : <Navigate to="/login" />} />
-          <Route path="/shortlist" element={user ? <ShortlistPage /> : <Navigate to="/login" />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/influencers" element={<InfluencerListPage />} />
+          <Route path="/influencers/:id" element={<InfluencerDetailPage />} />
+          <Route path="/shortlist" element={<ShortlistPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
