@@ -20,7 +20,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     setUser(null);
-    navigate('/login');
+    navigate('/');
   };
 
   if (!user) return null;
@@ -91,13 +91,13 @@ const Badge = ({ children, variant = 'default' }: { children: React.ReactNode, v
 const LandingPage = () => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-realize-dark flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-realize-dark flex flex-col relative overflow-hidden selection:bg-realize-purple/30 selection:text-white">
       {/* Background Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-realize-purple/20 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-realize-blue/20 blur-[120px] rounded-full" />
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-realize-purple/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-realize-blue/10 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Navbar */}
-      <nav className="relative z-20 flex justify-between items-center px-8 py-8 max-w-7xl mx-auto w-full">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-8 max-w-7xl mx-auto w-full backdrop-blur-sm">
         <img 
           src="https://www.realizenetworks.com/wp-content/uploads/2023/05/logo-realize-bianco.png" 
           alt="Realize Networks" 
@@ -119,109 +119,178 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center px-4 max-w-7xl mx-auto py-20">
-        <div className="max-w-4xl mx-auto text-center mb-24">
+      <main className="relative z-10 pt-32">
+        {/* ROW 1: HERO */}
+        <section className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 max-w-5xl mx-auto mb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
-              The <span className="realize-gradient-text">Ultimate</span> Tool for <br />
-              <span className="text-realize-blue">Talent</span> Management
+            <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter mb-8 leading-[0.85]">
+              The <span className="realize-gradient-text">Ultimate</span> <br />
+              <span className="text-realize-blue">Talent</span> Hub
             </h1>
-            <p className="text-zinc-400 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto">
-              La piattaforma all-in-one per agenzie e media center per gestire, 
-              analizzare e collaborare con i migliori talenti del panorama digitale.
+            <p className="text-zinc-400 text-lg md:text-2xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">
+              La piattaforma definitiva per agenzie e media center per gestire, 
+              analizzare e collaborare con i migliori talenti digitali.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <button 
                 onClick={() => navigate('/signup')}
                 className="px-10 py-5 bg-linear-to-r from-realize-purple to-realize-blue text-white rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:shadow-2xl hover:shadow-indigo-500/20 transition-all"
               >
-                Inizia Ora Gratis
+                Inizia Ora
               </button>
               <button 
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById('discovery')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all"
               >
                 Scopri di più
               </button>
             </div>
           </motion.div>
+        </section>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-12 mt-24">
-            <div>
-              <p className="text-3xl font-black text-white">500+</p>
-              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Talents</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black text-white">100M+</p>
-              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Reach</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black text-white">50+</p>
-              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Agencies</p>
+        {/* ROW 2: DISCOVERY */}
+        <section id="discovery" className="py-40 border-t border-white/5 px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div className="w-16 h-1 bg-realize-purple" />
+              <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                Talent <br /> <span className="text-realize-purple">Discovery</span>
+              </h2>
+              <p className="text-zinc-400 text-xl leading-relaxed">
+                Accedi a un database esclusivo di talenti. Filtra per verticali, 
+                engagement rate, location e presenza media. Trova il match perfetto 
+                per la tua campagna in pochi secondi.
+              </p>
+            </motion.div>
+            <div className="bg-white/5 rounded-[3rem] aspect-video border border-white/10 flex items-center justify-center relative overflow-hidden group">
+              <Search className="w-24 h-24 text-realize-purple opacity-20 group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-linear-to-tr from-realize-purple/20 to-transparent" />
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Features Section */}
-        <div id="features" className="w-full py-32 border-t border-white/5">
-          <div className="text-center mb-20">
-            <h2 className="text-xs font-black text-realize-purple uppercase tracking-[0.4em] mb-4">Features</h2>
-            <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Tutto ciò che ti serve <br /> in un unico posto.</h3>
+        {/* ROW 3: MANAGEMENT */}
+        <section className="py-40 border-t border-white/5 px-8 bg-white/[0.02]">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div className="order-2 md:order-1 bg-white/5 rounded-[3rem] aspect-video border border-white/10 flex items-center justify-center relative overflow-hidden group">
+              <Star className="w-24 h-24 text-realize-yellow opacity-20 group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-linear-to-bl from-realize-yellow/10 to-transparent" />
+            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8 order-1 md:order-2"
+            >
+              <div className="w-16 h-1 bg-realize-yellow" />
+              <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                Smart <br /> <span className="text-realize-yellow">Wishlist</span>
+              </h2>
+              <p className="text-zinc-400 text-xl leading-relaxed">
+                Organizza i tuoi talenti preferiti in liste dedicate. 
+                Condividi le selezioni con il tuo team e monitora la 
+                disponibilità in tempo reale per ogni progetto.
+              </p>
+            </motion.div>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
-              <div className="w-16 h-16 bg-realize-purple/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Search className="w-8 h-8 text-realize-purple" />
-              </div>
-              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Talent Discovery</h4>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Filtra e trova i talenti perfetti per il tuo brand attraverso verticali, 
-                engagement rate e presenza media (TV, Radio, Stampa).
+        {/* ROW 4: BRIEFING */}
+        <section className="py-40 border-t border-white/5 px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div className="w-16 h-1 bg-realize-blue" />
+              <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                Creative <br /> <span className="text-realize-blue">Briefing</span>
+              </h2>
+              <p className="text-zinc-400 text-xl leading-relaxed">
+                Crea brief professionali completi di obiettivi, brand values 
+                e creative direction. Genera automaticamente proposte per i 
+                talenti selezionati.
               </p>
-            </div>
-
-            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
-              <div className="w-16 h-16 bg-realize-blue/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-realize-blue" />
-              </div>
-              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Brief & Wishlist</h4>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Crea brief dettagliati in pochi clic e salva i tuoi talenti preferiti 
-                in wishlist personalizzate per ogni progetto.
-              </p>
-            </div>
-
-            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
-              <div className="w-16 h-16 bg-realize-yellow/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Award className="w-8 h-8 text-realize-yellow" />
-              </div>
-              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Case Studies</h4>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Analizza i risultati passati dei talenti con case studies dettagliati, 
-                KPI raggiunti e link alle campagne reali.
-              </p>
+            </motion.div>
+            <div className="bg-white/5 rounded-[3rem] aspect-video border border-white/10 flex items-center justify-center relative overflow-hidden group">
+              <Briefcase className="w-24 h-24 text-realize-blue opacity-20 group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-linear-to-br from-realize-blue/20 to-transparent" />
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Call to Action */}
-        <div className="w-full py-32 bg-linear-to-r from-realize-purple/10 to-realize-blue/10 rounded-[4rem] border border-white/5 text-center px-8">
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-8">Pronto a rivoluzionare <br /> il tuo lavoro?</h2>
-          <button 
-            onClick={() => navigate('/signup')}
-            className="px-12 py-6 bg-white text-realize-dark rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-realize-yellow transition-all"
+        {/* ROW 5: ANALYTICS */}
+        <section className="py-40 border-t border-white/5 px-8 bg-white/[0.02]">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div className="order-2 md:order-1 bg-white/5 rounded-[3rem] aspect-video border border-white/10 flex items-center justify-center relative overflow-hidden group">
+              <Award className="w-24 h-24 text-emerald-500 opacity-20 group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-linear-to-tr from-emerald-500/10 to-transparent" />
+            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8 order-1 md:order-2"
+            >
+              <div className="w-16 h-1 bg-emerald-500" />
+              <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                Data <br /> <span className="text-emerald-500">Insights</span>
+              </h2>
+              <p className="text-zinc-400 text-xl leading-relaxed">
+                Analizza le performance storiche e i case studies. 
+                Prendi decisioni basate sui dati reali per massimizzare 
+                il ROI delle tue campagne di influencer marketing.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* FINAL CTA */}
+        <section className="py-40 border-t border-white/5 text-center px-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto bg-linear-to-r from-realize-purple/20 to-realize-blue/20 p-20 rounded-[4rem] border border-white/10"
           >
-            Crea il tuo account ora
-          </button>
-        </div>
+            <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-12">
+              Pronto a gestire i tuoi <br /> talenti come un pro?
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button 
+                onClick={() => navigate('/signup')}
+                className="px-12 py-6 bg-white text-realize-dark rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-realize-yellow transition-all"
+              >
+                Registrati Ora
+              </button>
+              <button 
+                onClick={() => navigate('/login')}
+                className="px-12 py-6 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all"
+              >
+                Login
+              </button>
+            </div>
+          </motion.div>
+        </section>
       </main>
+
+      <footer className="py-12 border-t border-white/5 text-center">
+        <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.4em]">
+          © 2024 Realize Networks • All Rights Reserved
+        </p>
+      </footer>
     </div>
   );
 };
@@ -238,6 +307,13 @@ const SignupPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Frontend restriction check
+    if (email !== 'info@media.com') {
+      setError('Registration is restricted to authorized users only.');
+      return;
+    }
+
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -336,8 +412,8 @@ const SignupPage = () => {
 };
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('media@center.com');
-  const [password, setPassword] = useState('media123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { setUser } = useAuthStore();
   const navigate = useNavigate();
@@ -415,20 +491,6 @@ const LoginPage = () => {
         <p className="mt-8 text-center text-xs text-zinc-400 font-bold">
           Don't have an account? <Link to="/signup" className="text-realize-purple hover:underline">Sign Up</Link>
         </p>
-
-        <div className="mt-10 pt-8 border-t border-zinc-100">
-          <p className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.2em] text-center mb-4">Demo Access</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-100">
-              <p className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Media Center</p>
-              <p className="text-[10px] font-bold text-zinc-600 truncate">media@center.com</p>
-            </div>
-            <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-100">
-              <p className="text-[8px] font-black text-zinc-400 uppercase tracking-tighter">Admin</p>
-              <p className="text-[10px] font-bold text-zinc-600 truncate">admin@portal.com</p>
-            </div>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
@@ -445,9 +507,17 @@ const InfluencerListPage = () => {
 
   useEffect(() => {
     fetch('/api/influencers')
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
-        setInfluencers(data);
+        if (Array.isArray(data)) {
+          setInfluencers(data);
+        } else {
+          setInfluencers([]);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setInfluencers([]);
         setLoading(false);
       });
   }, []);
@@ -470,11 +540,13 @@ const InfluencerListPage = () => {
     );
   };
 
-  const allVerticals = Array.from(new Set(influencers.flatMap(inf => inf.verticals))).sort();
+  const allVerticals = Array.isArray(influencers) 
+    ? Array.from(new Set(influencers.flatMap(inf => inf.verticals || []))).sort()
+    : [];
 
-  const filtered = influencers.filter(inf => {
+  const filtered = (Array.isArray(influencers) ? influencers : []).filter(inf => {
     const matchesSearch = inf.name.toLowerCase().includes(search.toLowerCase()) ||
-      inf.verticals.some((v: string) => v.toLowerCase().includes(search.toLowerCase()));
+      (Array.isArray(inf.verticals) && inf.verticals.some((v: string) => v.toLowerCase().includes(search.toLowerCase())));
     
     if (!matchesSearch) return false;
 
@@ -493,7 +565,7 @@ const InfluencerListPage = () => {
 
     // Vertical Filters
     if (selectedVerticals.length > 0) {
-      const matchesVertical = selectedVerticals.some(v => inf.verticals.includes(v));
+      const matchesVertical = Array.isArray(inf.verticals) && selectedVerticals.some(v => inf.verticals.includes(v));
       if (!matchesVertical) return false;
     }
 
@@ -708,63 +780,73 @@ const InfluencerListPage = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {filtered.map(inf => (
-                  <motion.div 
-                    key={inf.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="realize-card group relative aspect-3/4"
-                  >
-                    <img 
-                      src={inf.avatar_url} 
-                      alt={inf.name} 
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-realize-dark/90 via-realize-dark/20 to-transparent" />
-                    
-                    <div className="absolute top-6 left-6 flex flex-col gap-2">
-                      <Badge variant="luxury">{inf.engagement_rate}% ER</Badge>
-                      <div className="px-2 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 flex items-center gap-2">
-                        <Award className="w-3 h-3 text-realize-yellow" />
-                        <span className="text-[8px] font-black text-white uppercase tracking-widest">Case Studies</span>
-                      </div>
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <div className="mb-4">
-                        <h3 className="text-2xl font-black text-white tracking-tight mb-1">{inf.name}</h3>
-                        <p className="text-zinc-300 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                          <MapPin className="w-3 h-3 text-realize-blue" /> {inf.location}
-                        </p>
-                      </div>
+                {filtered.length > 0 ? (
+                  filtered.map(inf => (
+                    <motion.div 
+                      key={inf.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="realize-card group relative aspect-3/4"
+                    >
+                      <img 
+                        src={inf.avatar_url} 
+                        alt={inf.name} 
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-realize-dark/90 via-realize-dark/20 to-transparent" />
                       
-                      <div className="flex flex-wrap gap-2 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        {inf.verticals.slice(0, 2).map((v: string) => (
-                          <span key={v} className="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-[8px] font-black text-white uppercase tracking-widest">
-                            {v}
-                          </span>
-                        ))}
+                      <div className="absolute top-6 left-6 flex flex-col gap-2">
+                        <Badge variant="luxury">{inf.engagement_rate}% ER</Badge>
+                        <div className="px-2 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 flex items-center gap-2">
+                          <Award className="w-3 h-3 text-realize-yellow" />
+                          <span className="text-[8px] font-black text-white uppercase tracking-widest">Case Studies</span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <Link 
-                          to={`/influencers/${inf.id}`}
-                          className="flex-1 bg-white text-realize-dark text-center py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-realize-yellow transition-all"
-                        >
-                          View Profile
-                        </Link>
-                        <button 
-                          onClick={() => addToShortlist(inf.id)}
-                          className="p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl hover:bg-realize-purple transition-all"
-                        >
-                          <Star className="w-5 h-5" />
-                        </button>
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <div className="mb-4">
+                          <h3 className="text-2xl font-black text-white tracking-tight mb-1">{inf.name}</h3>
+                          <p className="text-zinc-300 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                            <MapPin className="w-3 h-3 text-realize-blue" /> {inf.location}
+                          </p>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          {Array.isArray(inf.verticals) && inf.verticals.slice(0, 2).map((v: string) => (
+                            <span key={v} className="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-[8px] font-black text-white uppercase tracking-widest">
+                              {v}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <Link 
+                            to={`/influencers/${inf.id}`}
+                            className="flex-1 bg-white text-realize-dark text-center py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-realize-yellow transition-all"
+                          >
+                            View Profile
+                          </Link>
+                          <button 
+                            onClick={() => addToShortlist(inf.id)}
+                            className="p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl hover:bg-realize-purple transition-all"
+                          >
+                            <Star className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full py-20 text-center">
+                    <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Search className="w-8 h-8 text-zinc-200" />
                     </div>
-                  </motion.div>
-                ))}
+                    <h3 className="text-xl font-black text-zinc-900 tracking-tight mb-2">No talents found</h3>
+                    <p className="text-zinc-400 text-sm font-medium">Try adjusting your filters or search terms.</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
