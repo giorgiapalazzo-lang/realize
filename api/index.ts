@@ -349,6 +349,28 @@ const authenticate = (req: any, res: any, next: any) => {
 };
 
 // API Routes
+app.post('/api/auth/register', (req, res) => {
+  const { email, password, name, role } = req.body;
+  
+  // Check if user exists
+  const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  if (existing) {
+    return res.status(400).json({ error: 'Email already registered' });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  try {
+    const result = db.prepare('INSERT INTO users (email, password_hash, name, role) VALUES (?, ?, ?, ?)').run(email, hashedPassword, name, role || 'media_center');
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid) as any;
+    
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '1d' });
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
+    res.json({ id: user.id, email: user.email, role: user.role, name: user.name });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;

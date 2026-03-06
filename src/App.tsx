@@ -88,6 +88,253 @@ const Badge = ({ children, variant = 'default' }: { children: React.ReactNode, v
 
 // --- Pages ---
 
+const LandingPage = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen bg-realize-dark flex flex-col relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-realize-purple/20 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-realize-blue/20 blur-[120px] rounded-full" />
+
+      {/* Navbar */}
+      <nav className="relative z-20 flex justify-between items-center px-8 py-8 max-w-7xl mx-auto w-full">
+        <img 
+          src="https://www.realizenetworks.com/wp-content/uploads/2023/05/logo-realize-bianco.png" 
+          alt="Realize Networks" 
+          className="h-10"
+        />
+        <div className="flex gap-4">
+          <button 
+            onClick={() => navigate('/login')}
+            className="px-6 py-3 text-xs font-black text-white uppercase tracking-widest hover:text-realize-yellow transition-colors"
+          >
+            Login
+          </button>
+          <button 
+            onClick={() => navigate('/signup')}
+            className="px-8 py-3 bg-white text-realize-dark rounded-full text-xs font-black uppercase tracking-widest hover:bg-realize-yellow transition-all"
+          >
+            Registrati
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <main className="relative z-10 flex-1 flex flex-col items-center px-4 max-w-7xl mx-auto py-20">
+        <div className="max-w-4xl mx-auto text-center mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
+              The <span className="realize-gradient-text">Ultimate</span> Tool for <br />
+              <span className="text-realize-blue">Talent</span> Management
+            </h1>
+            <p className="text-zinc-400 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto">
+              La piattaforma all-in-one per agenzie e media center per gestire, 
+              analizzare e collaborare con i migliori talenti del panorama digitale.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button 
+                onClick={() => navigate('/signup')}
+                className="px-10 py-5 bg-linear-to-r from-realize-purple to-realize-blue text-white rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:shadow-2xl hover:shadow-indigo-500/20 transition-all"
+              >
+                Inizia Ora Gratis
+              </button>
+              <button 
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all"
+              >
+                Scopri di più
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-12 mt-24">
+            <div>
+              <p className="text-3xl font-black text-white">500+</p>
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Talents</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black text-white">100M+</p>
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Reach</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black text-white">50+</p>
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Agencies</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Features Section */}
+        <div id="features" className="w-full py-32 border-t border-white/5">
+          <div className="text-center mb-20">
+            <h2 className="text-xs font-black text-realize-purple uppercase tracking-[0.4em] mb-4">Features</h2>
+            <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Tutto ciò che ti serve <br /> in un unico posto.</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
+              <div className="w-16 h-16 bg-realize-purple/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                <Search className="w-8 h-8 text-realize-purple" />
+              </div>
+              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Talent Discovery</h4>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Filtra e trova i talenti perfetti per il tuo brand attraverso verticali, 
+                engagement rate e presenza media (TV, Radio, Stampa).
+              </p>
+            </div>
+
+            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
+              <div className="w-16 h-16 bg-realize-blue/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                <Briefcase className="w-8 h-8 text-realize-blue" />
+              </div>
+              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Brief & Wishlist</h4>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Crea brief dettagliati in pochi clic e salva i tuoi talenti preferiti 
+                in wishlist personalizzate per ogni progetto.
+              </p>
+            </div>
+
+            <div className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] hover:bg-white/10 transition-all group">
+              <div className="w-16 h-16 bg-realize-yellow/20 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                <Award className="w-8 h-8 text-realize-yellow" />
+              </div>
+              <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tight">Case Studies</h4>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Analizza i risultati passati dei talenti con case studies dettagliati, 
+                KPI raggiunti e link alle campagne reali.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="w-full py-32 bg-linear-to-r from-realize-purple/10 to-realize-blue/10 rounded-[4rem] border border-white/5 text-center px-8">
+          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-8">Pronto a rivoluzionare <br /> il tuo lavoro?</h2>
+          <button 
+            onClick={() => navigate('/signup')}
+            className="px-12 py-6 bg-white text-realize-dark rounded-2xl text-sm font-black uppercase tracking-[0.2em] hover:bg-realize-yellow transition-all"
+          >
+            Crea il tuo account ora
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+const SignupPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState<'media_center' | 'admin'>('media_center');
+  const [error, setError] = useState('');
+  const { setUser } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name, role }),
+    });
+    if (res.ok) {
+      const user = await res.json();
+      setUser(user);
+      navigate('/influencers');
+    } else {
+      const data = await res.json();
+      setError(data.error || 'Registration failed');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-realize-dark flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-realize-purple/20 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-realize-blue/20 blur-[120px] rounded-full" />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 relative z-10"
+      >
+        <div className="text-center mb-10">
+          <img 
+            src="https://www.realizenetworks.com/wp-content/uploads/2023/05/logo-realize.png" 
+            alt="Realize Networks" 
+            className="h-10 mx-auto mb-6"
+          />
+          <h1 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] mb-2">Create Account</h1>
+          <p className="text-zinc-500 text-sm">Join the Realize ecosystem today</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Full Name</label>
+            <input 
+              type="text" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:ring-2 focus:ring-realize-purple outline-none transition-all font-medium"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Email</label>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:ring-2 focus:ring-realize-purple outline-none transition-all font-medium"
+              placeholder="name@agency.com"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Password</label>
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:ring-2 focus:ring-realize-purple outline-none transition-all font-medium"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">Role</label>
+            <select 
+              value={role}
+              onChange={(e) => setRole(e.target.value as any)}
+              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:ring-2 focus:ring-realize-purple outline-none transition-all font-medium appearance-none"
+            >
+              <option value="media_center">Media Center</option>
+              <option value="admin">Admin / Agency</option>
+            </select>
+          </div>
+          {error && <p className="text-rose-500 text-xs font-bold text-center">{error}</p>}
+          <button 
+            type="submit"
+            className="w-full bg-linear-to-r from-realize-purple to-realize-blue text-white font-black uppercase tracking-[0.2em] py-5 rounded-2xl hover:shadow-xl hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2 mt-4"
+          >
+            Sign Up <ChevronRight className="w-4 h-4" />
+          </button>
+        </form>
+
+        <p className="mt-8 text-center text-xs text-zinc-400 font-bold">
+          Already have an account? <Link to="/login" className="text-realize-purple hover:underline">Login</Link>
+        </p>
+      </motion.div>
+    </div>
+  );
+};
+
 const LoginPage = () => {
   const [email, setEmail] = useState('media@center.com');
   const [password, setPassword] = useState('media123');
@@ -164,6 +411,10 @@ const LoginPage = () => {
             Sign In <ChevronRight className="w-4 h-4" />
           </button>
         </form>
+
+        <p className="mt-8 text-center text-xs text-zinc-400 font-bold">
+          Don't have an account? <Link to="/signup" className="text-realize-purple hover:underline">Sign Up</Link>
+        </p>
 
         <div className="mt-10 pt-8 border-t border-zinc-100">
           <p className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.2em] text-center mb-4">Demo Access</p>
@@ -1316,39 +1567,41 @@ Generato tramite Realize-tool
   );
 };
 
-// --- Main App ---
+const App = () => {
+  const { user, setUser, isLoading, setIsLoading } = useAuthStore();
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading, setIsLoading, setUser } = useAuthStore();
-  
   useEffect(() => {
     fetch('/api/auth/me')
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         setUser(data);
         setIsLoading(false);
-      });
+      })
+      .catch(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-white">
-    <div className="w-12 h-12 border-4 border-realize-purple border-t-transparent rounded-full animate-spin" />
-  </div>;
-  return user ? <>{children}</> : <Navigate to="/login" />;
-};
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-realize-dark">
+      <div className="w-12 h-12 border-4 border-realize-purple border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
-export default function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white font-sans text-realize-dark">
+      <div className="min-h-screen bg-white font-sans selection:bg-realize-purple/20 selection:text-realize-purple">
         <Navbar />
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/influencers" element={<PrivateRoute><InfluencerListPage /></PrivateRoute>} />
-          <Route path="/influencers/:id" element={<PrivateRoute><InfluencerDetailPage /></PrivateRoute>} />
-          <Route path="/shortlist" element={<PrivateRoute><ShortlistPage /></PrivateRoute>} />
-          <Route path="/" element={<Navigate to="/influencers" />} />
+          <Route path="/" element={user ? <Navigate to="/influencers" /> : <LandingPage />} />
+          <Route path="/login" element={user ? <Navigate to="/influencers" /> : <LoginPage />} />
+          <Route path="/signup" element={user ? <Navigate to="/influencers" /> : <SignupPage />} />
+          <Route path="/influencers" element={user ? <InfluencerListPage /> : <Navigate to="/login" />} />
+          <Route path="/influencers/:id" element={user ? <InfluencerDetailPage /> : <Navigate to="/login" />} />
+          <Route path="/shortlist" element={user ? <ShortlistPage /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>
   );
-}
+};
+
+export default App;
