@@ -102,6 +102,10 @@ const LandingPage = () => {
           src="https://www.realizenetworks.com/wp-content/uploads/2023/05/logo-realize-bianco.png" 
           alt="Realize Networks" 
           className="h-10"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://www.realizenetworks.com/wp-content/uploads/2023/05/logo-realize.png';
+            (e.target as HTMLImageElement).classList.add('invert');
+          }}
         />
         <div className="flex gap-4">
           <button 
@@ -424,6 +428,26 @@ const LoginPage = () => {
           </button>
         </form>
 
+        <div className="mt-4">
+          <button 
+            onClick={async () => {
+              const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: 'demo@example.com', password: 'demo' }),
+              });
+              if (res.ok) {
+                const user = await res.json();
+                setUser(user);
+                navigate('/influencers');
+              }
+            }}
+            className="w-full bg-zinc-900 text-white font-black uppercase tracking-[0.2em] py-4 rounded-2xl hover:bg-realize-purple transition-all flex items-center justify-center gap-2"
+          >
+            Quick Demo Login <LogIn className="w-4 h-4" />
+          </button>
+        </div>
+
         <p className="mt-8 text-center text-xs text-zinc-400 font-bold">
           Don't have an account? <Link to="/signup" className="text-realize-purple hover:underline">Sign Up</Link>
         </p>
@@ -463,9 +487,13 @@ const InfluencerListPage = () => {
 
   useEffect(() => {
     fetch('/api/influencers')
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
-        setInfluencers(data);
+        setInfluencers(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setInfluencers([]);
         setLoading(false);
       });
   }, []);
@@ -1610,6 +1638,7 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={user ? <Navigate to="/influencers" /> : <LandingPage />} />
+          <Route path="/home" element={<Navigate to="/" />} />
           <Route path="/login" element={user ? <Navigate to="/influencers" /> : <LoginPage />} />
           <Route path="/signup" element={user ? <Navigate to="/influencers" /> : <SignupPage />} />
           <Route path="/influencers" element={user ? <InfluencerListPage /> : <Navigate to="/login" />} />
